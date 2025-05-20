@@ -1,17 +1,12 @@
-import { Field, Form, Formik } from "formik";
+import { Field, Form, Formik, FormikProps, useFormikContext } from "formik";
 import { DatePicker, DatePickerInput } from "@mantine/dates";
 import { TextInput, Select, Modal, Button, NumberInput } from "@mantine/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "@mantine/dates/styles.css";
 import "@mantine/core/styles.css";
+import FormTable from "../Table/formTable";
 import { Stepper } from "@mantine/core";
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-type cowData = {
+export type cowData = {
   breed: string;
   birthDate: string | null;
   weightValue: Number;
@@ -21,18 +16,24 @@ type cowData = {
   location: string;
   landArea: Number;
   shelterValue: Number;
-  mortalityRateValue: Number;
+   milkLossRate:Number;
   cowsPerShelter: Number;
   dailyMilkProduction: Number;
   pricePerLiter: Number;
-  grossRevenue: Number;
-  shelterConstructionTime:Number;
-  shelterConstructionCost:Number;
-  fencingInstallationTime:Number;
-  fencingInstallationCost:Number;
-  waterSystemTime:Number;
-  waterSystemCost:Number;
-  
+  // grossRevenue: Number;
+  shelterConstructionTime: Number;
+  shelterConstructionCost: Number;
+  fencingInstallationTime: Number;
+  fencingInstallationCost: Number;
+  waterSystemTime: Number;
+  waterSystemCost: Number;
+  feedquantityPerKg: Number;
+  feedcostPerKg: Number;
+  milkinghourPerDay: Number;
+  milkingcostPerHour: Number;
+  vetVisitsNumber: Number;
+  costPerVisit: Number;
+  estGrossRevenue: Number,
 };
 
 const cowBreeds = [
@@ -52,82 +53,9 @@ const cowBreeds = [
   "Hariana",
   "Hissar",
 ];
-const cowdata = () =>
+const cowbreed = () =>
   cowBreeds.map((breed) => ({ label: breed, value: breed }));
-const columnHelper = createColumnHelper<cowData>();
 
-const columns = [
-  columnHelper.accessor("breed", {
-    cell: (info) => info.getValue(),
-    header: () => <span>Breed</span>,
-    footer: (info) => info.column.id,
-  }),
-  columnHelper.accessor("birthDate", {
-    cell: (info) => info.getValue() || "N/A",
-    header: () => <span>Date of Birth</span>,
-    footer: (info) => info.column.id,
-  }),
-  columnHelper.accessor("weightValue", {
-    cell: (info) => info.getValue(),
-    header: () => <span>Weight</span>,
-    footer: (info) => info.column.id,
-  }),
-  columnHelper.accessor("arrivalDate", {
-    cell: (info) => info.getValue() || "N/A",
-    header: () => <span>Arrival Date</span>,
-    footer: (info) => info.column.id,
-  }),
-  columnHelper.accessor("quarantineDays", {
-    cell: (info) => info.getValue(),
-    header: () => <span>Quarantine Days</span>,
-    footer: (info) => info.column.id,
-  }),
-  columnHelper.accessor("finalArrivalDate", {
-    cell: (info) => info.getValue() || "N/A",
-    header: () => <span>Arrival Date (Post-Quarantine)</span>,
-    footer: (info) => info.column.id,
-  }),
-  columnHelper.accessor("location", {
-    cell: (info) => info.getValue(),
-    header: () => <span>Location</span>,
-    footer: (info) => info.column.id,
-  }),
-  // columnHelper.accessor("landArea", {
-  //   cell: (info) => info.getValue(),
-  //   header: () => <span>Land Area</span>,
-  //   footer: (info) => info.column.id,
-  // }),
-  // columnHelper.accessor("shelterValue", {
-  //   cell: (info) => info.getValue(),
-  //   header: () => <span>No. of Shelters</span>,
-  //   footer: (info) => info.column.id,
-  // }),
-  // columnHelper.accessor("mortalityRateValue", {
-  //   cell: (info) => `${info.getValue()}%`,
-  //   header: () => <span>Mortality Rate (%)</span>,
-  //   footer: (info) => info.column.id,
-  // }),
-  // columnHelper.accessor("cowsPerShelter", {
-  //   cell: (info) => info.getValue(),
-  //   header: () => <span>Cows per Shelter</span>,
-  //   footer: (info) => info.column.id,
-  // }),
-  // columnHelper.accessor("dailyMilkProduction", {
-  //   cell: (info) => `${info.getValue()} liters`,
-  //   header: () => <span>Daily Milk Production (Liters)</span>,
-  //   footer: (info) => info.column.id,
-  // }),
-  // columnHelper.accessor("pricePerLiter", {
-  //   cell: (info) => `Rs ${info.getValue()}`,
-  //   header: () => <span>Price per Liter</span>,
-  //   footer: (info) => info.column.id,
-  // }),
-  columnHelper.accessor("grossRevenue", {
-    cell: (info) => `Rs ${info.getValue()}`,
-    header: () => <span>Gross Revenue</span>,
-    footer: (info) => info.column.id,
-  }),
-];
 const Animal: React.FC<{}> = () => {
   const initialValues: cowData = {
     breed: "",
@@ -139,20 +67,31 @@ const Animal: React.FC<{}> = () => {
     location: "",
     landArea: 0,
     shelterValue: 0,
-    mortalityRateValue: 0,
     cowsPerShelter: 0,
     dailyMilkProduction: 0,
     pricePerLiter: 0,
-    grossRevenue: 0,
-    shelterConstructionTime:0,
-  shelterConstructionCost:0,
-  fencingInstallationTime:0,
-  fencingInstallationCost:0,
-  waterSystemTime:0,
-  waterSystemCost:0,
+    // grossRevenue: 0,
+    shelterConstructionTime: 0,
+    shelterConstructionCost: 0,
+    fencingInstallationTime: 0,
+    fencingInstallationCost: 0,
+    waterSystemTime: 0,
+    waterSystemCost: 0,
+    feedquantityPerKg: 0,
+    feedcostPerKg: 0,
+    milkinghourPerDay: 0,
+    milkingcostPerHour: 0,
+    vetVisitsNumber: 0,
+    costPerVisit: 0,
+    milkLossRate:0,
+    estGrossRevenue: 0,
   };
-  const [data, setData] = React.useState<cowData[]>([]);
+
   const [modalOpened, setModalOpened] = React.useState(false);
+  const [data, setData] = React.useState<cowData[]>([]);
+
+ 
+
   // const [arrivalDate, setarrivalDate] = useState<string | null>(null);
   // const [dateafterQuarantine, setdateafterQuarantine] = useState<string | null>(null);
 
@@ -168,11 +107,6 @@ const Animal: React.FC<{}> = () => {
   //  const [weightValue,setweightValue] = useState("");
   //  const [location,setlocation] = useState("");
 
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  });
   return (
     <div>
       <div className=" max-w-5xl mx-auto">
@@ -186,14 +120,27 @@ const Animal: React.FC<{}> = () => {
         <Modal
           opened={modalOpened}
           onClose={() => setModalOpened(false)}
-        
           fullScreen
         >
+          
           <div className="bg-[var(--mantine-color-body)] [-webkit-tap-highlight-color:transparent] min-h-[60%] max-w-5xl mx-auto">
             <Formik
               initialValues={initialValues}
               onSubmit={(values, actions) => {
-                setData((prev) => [...prev, values]);
+               
+                 const dailyMilk = Number(values.dailyMilkProduction) || 0;
+      const price = Number(values.pricePerLiter) || 0;
+      const cows = Number(values.cowsPerShelter) || 0;
+      // const days = 30; // Make dynamic if needed
+      const lossRate = Number(values.milkLossRate || "0") / 100;
+
+      const grossRevenue = (dailyMilk * price * cows ) * (1 - lossRate);
+     const updatedValues = {
+    ...values,
+    estGrossRevenue: grossRevenue,
+  };
+                
+                setData((prev) => [...prev, updatedValues]);
                 actions.resetForm();
                 setModalOpened(false);
                 console.log({ values, actions });
@@ -201,8 +148,12 @@ const Animal: React.FC<{}> = () => {
                 actions.setSubmitting(false);
               }}
             >
-              {({ setFieldValue, values }) => (
+
+    
+              {({ setFieldValue, values })=>(
+             
                 <Form>
+                  
                   <h2 className="text-xl font-bold mb-3">
                     Cow Breed and Arrival Details
                   </h2>
@@ -213,7 +164,7 @@ const Animal: React.FC<{}> = () => {
                       label="Select Breed"
                       placeholder="Select Breed"
                       allowDeselect={false}
-                      data={cowdata()}
+                      data={cowbreed()}
                       searchable
                       onChange={(value) => setFieldValue("breed", value)}
                       value={values.breed}
@@ -247,11 +198,20 @@ const Animal: React.FC<{}> = () => {
                       value={values.arrivalDate}
                       onChange={(value) => setFieldValue("arrivalDate", value)}
                     />
-                    <TextInput
+                    <NumberInput
                       className="text-left"
                       style={{ width: "300px" }}
                       label="Quarantine Days"
-                      placeholder="Enter Days"
+                      placeholder="Enter Numbers"
+                      onChange={(value) =>
+                        setFieldValue("quarantineDays", value ?? 0)
+                      }
+                      value={
+                        typeof values.quarantineDays === "number" &&
+                        !isNaN(values.quarantineDays)
+                          ? values.quarantineDays
+                          : undefined
+                      }
                     />
                     <DatePickerInput
                       className="text-left"
@@ -277,7 +237,7 @@ const Animal: React.FC<{}> = () => {
                       onChange={(value) => setFieldValue("location", value)}
                       value={values.location}
                     />
-                    <TextInput
+                    <NumberInput
                       className="text-left"
                       style={{ width: "300px" }}
                       label="Land Area"
@@ -292,7 +252,7 @@ const Animal: React.FC<{}> = () => {
                           : undefined
                       }
                     />
-                    <TextInput
+                    <NumberInput
                       className="text-left"
                       style={{ width: "300px" }}
                       label="No of Shelters"
@@ -312,22 +272,22 @@ const Animal: React.FC<{}> = () => {
                     Cow Production and Revenue Details
                   </h2>
                   <div className="grid grid-cols-3 mt-5 gap-8 max-w-5xl mx-auto">
-                    <TextInput
+                    <NumberInput
                       className="text-left"
                       style={{ width: "300px" }}
-                      label="Est. Mortality Rate (%)"
+                      label="Milk Lost Rate (%)"
                       placeholder="Enter Percentage"
                       onChange={(value) =>
-                        setFieldValue("mortalityRateValue", value ?? 0)
+                        setFieldValue("milkLossRate", value ?? 0)
                       }
                       value={
-                        typeof values.mortalityRateValue === "number" &&
-                        !isNaN(values.mortalityRateValue)
-                          ? values.mortalityRateValue
+                        typeof values.milkLossRate === "number" &&
+                        !isNaN(values.milkLossRate)
+                          ? values.milkLossRate
                           : undefined
                       }
                     />
-                    <TextInput
+                    <NumberInput
                       className="text-left"
                       style={{ width: "300px" }}
                       label="Total cows under per shelter"
@@ -342,7 +302,8 @@ const Animal: React.FC<{}> = () => {
                           : undefined
                       }
                     />
-                    <TextInput
+
+                    <NumberInput
                       className="text-left"
                       style={{ width: "300px" }}
                       label="Daily Milk Production Per Cow (Liters)"
@@ -375,27 +336,39 @@ const Animal: React.FC<{}> = () => {
                       }
                     />
 
-                    <NumberInput
+                    {/* <NumberInput
                       className="text-left"
                       style={{ width: "300px" }}
                       label="Gross Revenue"
+                      readOnly
                       value={
-                        typeof values.grossRevenue === "number" &&
-                        !isNaN(values.grossRevenue)
-                          ? values.grossRevenue
+                        typeof values.estGrossRevenue === "number" &&
+                        !isNaN(values.estGrossRevenue)
+                          ? values.estGrossRevenue
                           : undefined
                       }
-                      onChange={(val) => setFieldValue("grossRevenue", val)}
+                     
                       min={0}
-                    />
+                    /> */}
+                    <NumberInput
+                            className="text-left"
+                      style={{ width: "300px" }}
+                            label="Est. Gross Revenue (Rs)"
+                            placeholder="Calculated Revenue"
+                            value={grossRevenue}
+                            readOnly
+                            
+                          />
                   </div>
                   <h2 className="text-xl font-bold mt-20">
                     Cost of Dairy Infrastructure Setup
                   </h2>
                   <div className="grid grid-cols-3 mt-5 gap-8 max-w-5xl mx-auto">
-                    <p>Shelter Construction
-                    <h6>Total Cost</h6></p>
-                    <TextInput
+                    <p>
+                      Shelter Construction
+                      <h6>Total Cost</h6>
+                    </p>
+                    <NumberInput
                       className="text-left"
                       style={{ width: "300px" }}
                       label="Time"
@@ -410,7 +383,7 @@ const Animal: React.FC<{}> = () => {
                           : undefined
                       }
                     />
-                    <TextInput
+                    <NumberInput
                       className="text-left"
                       style={{ width: "300px" }}
                       label="Cost"
@@ -425,10 +398,14 @@ const Animal: React.FC<{}> = () => {
                           : undefined
                       }
                     />
-                            
-                    <p>Fencing Installation
-                    <h6>Total Cost</h6></p>
-                    <TextInput
+
+                    <h6>
+                      
+                      Fencing Installation- Total Cost:
+                      
+                    </h6>
+
+                    <NumberInput
                       className="text-left"
                       style={{ width: "300px" }}
                       label="Time"
@@ -443,7 +420,7 @@ const Animal: React.FC<{}> = () => {
                           : undefined
                       }
                     />
-                    <TextInput
+                    <NumberInput
                       className="text-left"
                       style={{ width: "300px" }}
                       label="Cost"
@@ -458,9 +435,11 @@ const Animal: React.FC<{}> = () => {
                           : undefined
                       }
                     />
-                    <p>Water System Setup
-                    <h6>Total Cost</h6></p>
-                    <TextInput
+                    <p>
+                      Water System Setup
+                      <h6>Total Cost</h6>
+                    </p>
+                    <NumberInput
                       className="text-left"
                       style={{ width: "300px" }}
                       label="Time"
@@ -475,7 +454,7 @@ const Animal: React.FC<{}> = () => {
                           : undefined
                       }
                     />
-                    <TextInput
+                    <NumberInput
                       className="text-left"
                       style={{ width: "300px" }}
                       label="Cost"
@@ -491,6 +470,115 @@ const Animal: React.FC<{}> = () => {
                       }
                     />
                   </div>
+
+                  <h2 className="text-xl font-bold mt-20">
+                    Cost of Cow Maintenance & Milk Production
+                  </h2>
+                  <div className="grid grid-cols-3 mt-5 gap-8 max-w-5xl mx-auto">
+                    <p>
+                      Feed Quantity
+                      <h6>Total Cost</h6>
+                    </p>
+                    <NumberInput
+                      className="text-left"
+                      style={{ width: "300px" }}
+                      label="Quantity"
+                      placeholder="kg of Feed Per Day"
+                      onChange={(value) =>
+                        setFieldValue("feedquantityPerKg", value ?? 0)
+                      }
+                      value={
+                        typeof values.feedquantityPerKg === "number" &&
+                        !isNaN(values.feedquantityPerKg)
+                          ? values.feedquantityPerKg
+                          : undefined
+                      }
+                    />
+                    <NumberInput
+                      className="text-left"
+                      style={{ width: "300px" }}
+                      label="Cost"
+                      placeholder="cost per kg"
+                      onChange={(value) =>
+                        setFieldValue("feedcostPerKg", value)
+                      }
+                      value={
+                        typeof values.feedcostPerKg === "number" &&
+                        !isNaN(values.feedcostPerKg)
+                          ? values.feedcostPerKg
+                          : undefined
+                      }
+                    />
+
+                    <p>
+                      Milking
+                      <h6>Total Cost</h6>
+                      {/* <h6>Total Cost ${((parseFloat(values.fencingInstallationTime) || 0) * (parseFloat() || 0)).toFixed(2)}</h6> */}
+                    </p>
+
+                    <NumberInput
+                      className="text-left"
+                      style={{ width: "300px" }}
+                      label="Time"
+                      placeholder="Milking Hour Per Day"
+                      onChange={(value) =>
+                        setFieldValue("milkinghourPerDay", value ?? 0)
+                      }
+                      value={
+                        typeof values.milkinghourPerDay === "number" &&
+                        !isNaN(values.milkinghourPerDay)
+                          ? values.milkinghourPerDay
+                          : undefined
+                      }
+                    />
+                    <NumberInput
+                      className="text-left"
+                      style={{ width: "300px" }}
+                      label="Cost"
+                      placeholder="Milking cost per hour"
+                      onChange={(value) =>
+                        setFieldValue("milkingcostPerHour", value)
+                      }
+                      value={
+                        typeof values.milkingcostPerHour === "number" &&
+                        !isNaN(values.milkingcostPerHour)
+                          ? values.milkingcostPerHour
+                          : undefined
+                      }
+                    />
+                    <p>
+                      Veterinary Visits
+                      <h6>Total Cost</h6>
+                    </p>
+                    <NumberInput
+                      className="text-left"
+                      style={{ width: "300px" }}
+                      label="Man Day"
+                      placeholder="Number of visits"
+                      onChange={(value) =>
+                        setFieldValue("vetVisitsNumber", value ?? 0)
+                      }
+                      value={
+                        typeof values.vetVisitsNumber === "number" &&
+                        !isNaN(values.vetVisitsNumber)
+                          ? values.vetVisitsNumber
+                          : undefined
+                      }
+                    />
+                    <NumberInput
+                      className="text-left"
+                      style={{ width: "300px" }}
+                      label="Cost"
+                      placeholder="Enter cost per unit"
+                      onChange={(value) => setFieldValue("costPerVisit", value)}
+                      value={
+                        typeof values.costPerVisit === "number" &&
+                        !isNaN(values.costPerVisit)
+                          ? values.costPerVisit
+                          : undefined
+                      }
+                    />
+                  </div>
                   <Button
                     type="submit"
                     mt="30"
@@ -501,70 +589,14 @@ const Animal: React.FC<{}> = () => {
                     Submit
                   </Button>
                 </Form>
-              )}
+  )}
             </Formik>
           </div>
         </Modal>
+        <FormTable data={data} setData={setData} />
       </div>
-      {data.length > 0 && (
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-xl font-bold mb-4">Animal Data</h2>
-          <table className="min-w-full border-collapse border border-gray-300">
-            <thead>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <tr key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <th
-                      key={header.id}
-                      className="border border-gray-300 p-2 text-left bg-gray-100"
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-            <tbody>
-              {table.getRowModel().rows.map((row) => (
-                <tr key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="border border-gray-300 p-2">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-            <tfoot>
-              {table.getFooterGroups().map((footerGroup) => (
-                <tr key={footerGroup.id}>
-                  {footerGroup.headers.map((header) => (
-                    <th key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.footer,
-                            header.getContext(),
-                          )}
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </tfoot>
-          </table>
-        </div>
-      )}
     </div>
   );
 };
 
 export default Animal;
-
