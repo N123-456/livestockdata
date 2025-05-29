@@ -16,7 +16,7 @@ export type cowData = {
   location: string;
   landArea: Number;
   shelterValue: Number;
-   milkLossRate:Number;
+  milkLossRate: Number;
   cowsPerShelter: Number;
   dailyMilkProduction: Number;
   pricePerLiter: Number;
@@ -33,7 +33,7 @@ export type cowData = {
   milkingcostPerHour: Number;
   vetVisitsNumber: Number;
   costPerVisit: Number;
-  estGrossRevenue: Number,
+  estGrossRevenue: Number;
 };
 
 const cowBreeds = [
@@ -83,14 +83,12 @@ const Animal: React.FC<{}> = () => {
     milkingcostPerHour: 0,
     vetVisitsNumber: 0,
     costPerVisit: 0,
-    milkLossRate:0,
+    milkLossRate: 0,
     estGrossRevenue: 0,
   };
 
   const [modalOpened, setModalOpened] = React.useState(false);
   const [data, setData] = React.useState<cowData[]>([]);
-
- 
 
   // const [arrivalDate, setarrivalDate] = useState<string | null>(null);
   // const [dateafterQuarantine, setdateafterQuarantine] = useState<string | null>(null);
@@ -122,24 +120,22 @@ const Animal: React.FC<{}> = () => {
           onClose={() => setModalOpened(false)}
           fullScreen
         >
-          
           <div className="bg-[var(--mantine-color-body)] [-webkit-tap-highlight-color:transparent] min-h-[60%] max-w-5xl mx-auto">
             <Formik
               initialValues={initialValues}
               onSubmit={(values, actions) => {
-               
-                 const dailyMilk = Number(values.dailyMilkProduction) || 0;
-      const price = Number(values.pricePerLiter) || 0;
-      const cows = Number(values.cowsPerShelter) || 0;
-      // const days = 30; // Make dynamic if needed
-      const lossRate = Number(values.milkLossRate || "0") / 100;
+                const dailyMilk = Number(values.dailyMilkProduction) || 0;
+                const price = Number(values.pricePerLiter) || 0;
+                const cows = Number(values.cowsPerShelter) || 0;
+                // const days = 30; // Make dynamic if needed
+                const lossRate = Number(values.milkLossRate || "0") / 100;
 
-      const grossRevenue = (dailyMilk * price * cows ) * (1 - lossRate);
-     const updatedValues = {
-    ...values,
-    estGrossRevenue: grossRevenue,
-  };
-                
+                const grossRevenue = dailyMilk * price * cows * (1 - lossRate);
+                const updatedValues = {
+                  ...values,
+                  estGrossRevenue: grossRevenue,
+                };
+
                 setData((prev) => [...prev, updatedValues]);
                 actions.resetForm();
                 setModalOpened(false);
@@ -148,12 +144,8 @@ const Animal: React.FC<{}> = () => {
                 actions.setSubmitting(false);
               }}
             >
-
-    
-              {({ setFieldValue, values })=>(
-             
+              {({ setFieldValue, values }) => (
                 <Form>
-                  
                   <h2 className="text-xl font-bold mb-3">
                     Cow Breed and Arrival Details
                   </h2>
@@ -351,14 +343,12 @@ const Animal: React.FC<{}> = () => {
                       min={0}
                     /> */}
                     <NumberInput
-                            className="text-left"
+                      className="text-left"
                       style={{ width: "300px" }}
-                            label="Est. Gross Revenue (Rs)"
-                            placeholder="Calculated Revenue"
-                            value={grossRevenue}
-                            readOnly
-                            
-                          />
+                      label="Est. Gross Revenue (Rs)"
+                      placeholder="Calculated Revenue"
+                      readOnly
+                    />
                   </div>
                   <h2 className="text-xl font-bold mt-20">
                     Cost of Dairy Infrastructure Setup
@@ -399,11 +389,7 @@ const Animal: React.FC<{}> = () => {
                       }
                     />
 
-                    <h6>
-                      
-                      Fencing Installation- Total Cost:
-                      
-                    </h6>
+                    <h6>Fencing Installation- Total Cost:</h6>
 
                     <NumberInput
                       className="text-left"
@@ -589,7 +575,7 @@ const Animal: React.FC<{}> = () => {
                     Submit
                   </Button>
                 </Form>
-  )}
+              )}
             </Formik>
           </div>
         </Modal>
