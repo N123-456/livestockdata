@@ -1,146 +1,84 @@
-import React from 'react'
-import { RouterProvider,createBrowserRouter } from 'react-router-dom';
-import PublicRoute from './PublicRoute';
-import Login from '../Animals/Pages/LoginPage/Login';
-import ProtectedRoute from './ProtectedRoute';
-import { AppLayout } from '../Animals/Pages/AppShell/AppLayout';
-import Dashboard from '../Animals/Pages/Dashboard/Dashboard';
-import LandLocationForm from '../Animals/Pages/LandLocationForm/LandLocationForm';
-import ShelterForm from '../Animals/Pages/SheltersForm/ShelterForm';
-import BuyAnimalsForm from '../Animals/Pages/BuyAnimalsForm/BuyAnimalsForm';
-import PostBuyingForm from '../Animals/Pages/PostBuyingForm/PostBuyingForm';
-import FeedingScheduleForm from '../Animals/Pages/FeedingScheduleForm/FeedingScheduleForm';
-import VaccinationForm from '../Animals/Pages/VaccinationForm/VaccinationForm';
-import CleaningMaintenanceForm from '../Animals/Pages/CleaningMaintenanceForm/CleaningMaintenanceForm';
-import HealthMonitoringForm from '../Animals/Pages/HealthMonitoringForm/HealthMonitoringForm';
-import ExpensesForm from '../Animals/Pages/ExpensesForm/ExpensesForm';
-const Routes = () => {
- const router = createBrowserRouter([
+import React from "react";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import PublicRoute from "./PublicRoute";
+import Login from "../Animals/Pages/LoginPage/Login";
+import ProtectedRoute from "./ProtectedRoute";
+import { AppLayout } from "../Animals/Pages/AppShell/AppLayout";
+import Dashboard from "../Animals/Pages/Dashboard/Dashboard";
+import LandLocationForm from "../Animals/Pages/LandLocationForm/LandLocationForm";
+import ShelterForm from "../Animals/Pages/SheltersForm/ShelterForm";
+import BuyAnimalsForm from "../Animals/Pages/BuyAnimalsForm/BuyAnimalsForm";
+import PostBuyingForm from "../Animals/Pages/PostBuyingForm/PostBuyingForm";
+import FeedingScheduleForm from "../Animals/Pages/FeedingScheduleForm/FeedingScheduleForm";
+import VaccinationForm from "../Animals/Pages/VaccinationForm/VaccinationForm";
+import CleaningMaintenanceForm from "../Animals/Pages/CleaningMaintenanceForm/CleaningMaintenanceForm";
+import HealthMonitoringForm from "../Animals/Pages/HealthMonitoringForm/HealthMonitoringForm";
+import ExpensesForm from "../Animals/Pages/ExpensesForm/ExpensesForm";
 
+const Routes = () => {
+  const router = createBrowserRouter([
     {
       path: "/",
-      element: (
-        
-          <Login />
-        
-      ),
-    },
-    {
-      path: "dashboard",
-      element: <AppLayout />,
+      element: <PublicRoute />,
       children: [
         {
           index: true,
-          element: (
-            
-              <Dashboard />
-          
-          ),
+          element: <Login />,
         },
       ],
     },
     {
-      path: "/landlocation",
-      element: <AppLayout />,
-
+      element: (
+        <ProtectedRoute>
+          <AppLayout />
+        </ProtectedRoute>
+      ),
       children: [
         {
-          index: true,
+          path: "/dashboard",
+          element: <Dashboard />,
+        },
+        {
+          path: "/landlocation",
           element: <LandLocationForm />,
         },
-      ],
-    },
-    {
-      path: "/shelter",
-      element: <AppLayout />,
-
-      children: [
         {
-          index: true,
+          path: "/shelter",
           element: <ShelterForm />,
         },
-      ],
-    },
-    {
-      path: "/buyanimal",
-      element: <AppLayout />,
-
-      children: [
         {
-          index: true,
+          path: "/buyanimal",
           element: <BuyAnimalsForm />,
         },
-      ],
-    },
-    {
-      path: "/postbuying",
-      element: <AppLayout />,
-
-      children: [
         {
-          index: true,
+          path: "/postbuying",
           element: <PostBuyingForm />,
         },
-      ],
-    },
-    {
-      path: "/feeding",
-      element: <AppLayout />,
-
-      children: [
         {
-          index: true,
+          path: "/feeding",
           element: <FeedingScheduleForm />,
         },
-      ],
-    },
-     {
-      path: "/vaccination",
-      element: <AppLayout />,
-
-      children: [
         {
-          index: true,
+          path: "/vaccination",
           element: <VaccinationForm />,
         },
-      ],
-    },
-     {
-      path: "/shelter-cleaning",
-      element: <AppLayout />,
-
-      children: [
         {
-          index: true,
+          path: "/sheltercleaning",
           element: <CleaningMaintenanceForm />,
         },
-      ],
-    },
-     {
-      path: "/health-monitoring",
-      element: <AppLayout />,
-
-      children: [
         {
-          index: true,
+          path: "/healthmonitoring",
           element: <HealthMonitoringForm />,
         },
-      ],
-    },
-     {
-      path: "/expenses",
-      element: <AppLayout />,
-
-      children: [
         {
-          index: true,
+          path: "/expenses",
           element: <ExpensesForm />,
         },
       ],
     },
   ]);
-   return <RouterProvider router={router} />
+
+  return <RouterProvider router={router} />;
 };
 
-export default Routes
-
+export default Routes;

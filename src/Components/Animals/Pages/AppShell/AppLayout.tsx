@@ -8,9 +8,10 @@ export function AppLayout() {
 
   return (
     <AppShell
+    className="app-layout"
       header={{ height: 60 }}
       navbar={{
-        width: 300,
+        width: 100,
         breakpoint: "sm",
         collapsed: { mobile: !opened },
       }}
@@ -26,8 +27,8 @@ export function AppLayout() {
         <NavSideBar />
       </AppShell.Navbar>
 
-      <AppShell.Main>
-        <Outlet />
+      <AppShell.Main className="main-content">
+        <Outlet /> {/* This was missing - it renders the child routes */}
       </AppShell.Main>
     </AppShell>
   );
