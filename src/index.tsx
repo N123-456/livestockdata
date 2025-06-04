@@ -5,12 +5,16 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { MantineContext, MantineProvider } from '@mantine/core';
 import './index.css';
+import '@mantine/core/styles.css';
+const theme=({
+  fontFamily: 'Open Sans, sans-serif',
+})
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <MantineProvider>
+    <MantineProvider theme={theme}>
     <App />
     </MantineProvider>
   </React.StrictMode>

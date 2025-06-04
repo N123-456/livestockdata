@@ -1,4 +1,4 @@
-import { AppShell, Burger, Group } from "@mantine/core";
+import { AppShell, Burger, Code, Group } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { NavSideBar } from "../../Sidebar/NavSideBar";
 import { Outlet } from "react-router-dom";
@@ -8,10 +8,9 @@ export function AppLayout() {
 
   return (
     <AppShell
-    className="app-layout"
       header={{ height: 60 }}
       navbar={{
-        width: 100,
+        width:300 ,
         breakpoint: "sm",
         collapsed: { mobile: !opened },
       }}
@@ -22,12 +21,12 @@ export function AppLayout() {
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
         </Group>
       </AppShell.Header>
-
+      
       <AppShell.Navbar p="md">
         <NavSideBar />
       </AppShell.Navbar>
 
-      <AppShell.Main className="main-content">
+      <AppShell.Main className="bg-gray-50">
         <Outlet /> {/* This was missing - it renders the child routes */}
       </AppShell.Main>
     </AppShell>

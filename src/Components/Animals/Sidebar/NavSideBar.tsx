@@ -1,18 +1,19 @@
 import { useState } from "react";
 import {
-  Icon2fa,
-  IconBellRinging,
-  IconDatabaseImport,
-  IconFingerprint,
-  IconKey,
-  IconLogout,
-  IconReceipt2,
-  IconSettings,
-  IconSwitchHorizontal,
+  IconHome,
+  IconMapPin,
+  IconBuilding,
+  IconShoppingCart,
+  IconClipboardList,
+  IconBowl,
+  IconRings,
+  IconTrash,
+  IconHeartPause,
+  IconWallet,
 } from "@tabler/icons-react";
 import { Code, Group } from "@mantine/core";
+import { Link, useLocation } from "react-router-dom";
 import classes from "./Navbar.module.css";
-import { Link } from "react-router-dom";
 interface LinksGroupProps {
   icon: React.ForwardRefExoticComponent<
     React.ComponentPropsWithoutRef<"svg"> & { stroke?: number }
@@ -23,77 +24,55 @@ interface LinksGroupProps {
 }
 
 const data = [
-  { link: "/dashboard", label: "Dashboard" },
-  { link: "/landlocation", label: "Land and Location"},
-  { link: "/shelter", label: "Shelters Details"},
-  { link: "/buyanimal", label: "Buy Animals"},
-  { link: "/postbuying", label: "Post Buying"},
+  { link: "/dashboard", label: "Dashboard", icon: IconHome },
+  { link: "/landlocation", label: "Land and Location", icon: IconMapPin },
+  { link: "/shelter", label: "Shelters Details", icon: IconBuilding },
+  { link: "/buyanimal", label: "Buy Animals", icon: IconShoppingCart },
+  { link: "/postbuying", label: "Post Buying", icon: IconClipboardList },
   {
     link: "/feeding",
     label: "Feeding item and watering schedule",
+    icon: IconBowl,
   },
-  { link: "/vaccination", label: "Vaccination"},
+  { link: "/vaccination", label: "Vaccination", icon: IconRings },
   {
     link: "/sheltercleaning",
-    label: "Shelter Cleaning & Maintenance"
+    label: "Shelter Cleaning & Maintenance",
+    icon: IconTrash,
   },
-  { link: "/healthmonitoring", label: "Health Monitoring"},
-  { link: "/expenses", label: "Expenses"},
+  {
+    link: "/healthmonitoring",
+    label: "Health Monitoring",
+    icon: IconHeartPause,
+  },
+  { link: "/expenses", label: "Expenses", icon: IconWallet },
 ];
 export function NavSideBar() {
-  const [active, setActive] = useState("dashboard");
-
+  const [active, setActive] = useState("/dashboard");
+ const location = useLocation();
+  const currentPath = location.pathname;
   const links = data.map((item) => (
-    <Link
-  className={`flex items-center px-4 py-2 rounded-md text-sm font-medium transition-all ${
-        active === item.link
-          ? "bg-blue-600 text-white"
-          : "text-gray-700 hover:bg-blue-100 hover:text-blue-700"
-      }`}
-      data-active={item.label === active || undefined}
-      to={item.link}
+    <a
+      className={classes.link}
+      data-active={item.link === currentPath || undefined}
+      href={item.link}
       key={item.label}
-       onClick={()=>
-      setActive(item.link)
-     }
-     >
-      
-    {/* {item.icon ? (
-    <item.icon className={classes.linkIcon} stroke={1.5} />
-    ) : null}  */}
-    <span>{item.label}</span>
-   </Link>
+      onClick={() => setActive(item.label)}
+    >
+      <item.icon className={classes.linkIcon} stroke={1.5} />
+      <span>{item.label}</span>
+    </a>
   ));
-
   return (
-    
-    <nav className="w-64 h-screen bg-white border-r shadow-md p-4 flex flex-col justify-between">
-      <div>
-        <Group className="mb-6 text-xl font-semibold text-black-700" justify="space-between">
-          <Code fw={700}>Livestock</Code>
+    <nav className={classes.navbar}>
+      <div className={classes.navbarMain}>
+        <Group className={classes.header} justify="space-between">
+          {/* <MantineLogo size={28} />
+          <Code fw={700}>v3.1.2</Code> */}
+          <h2>LiveStock</h2>
         </Group>
-    <div className="space-y-2">{links}</div>
+        <div>{links}</div>
       </div>
-
-      {/* <div className={classes.footer}>
-        <a
-          href="#"
-          className={classes.link}
-          onClick={(event) => event.preventDefault()}
-        >
-          <IconSwitchHorizontal className={classes.linkIcon} stroke={1.5} />
-          <span>Change account</span>
-        </a>
-        <a
-          href="#"
-          className={classes.link}
-          onClick={(event) => event.preventDefault()}
-        >
-          <IconLogout className={classes.linkIcon} stroke={1.5} />
-          <span>Logout</span>
-        </a>
-        
-      </div> */}
     </nav>
   );
 }

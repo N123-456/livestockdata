@@ -29,8 +29,8 @@ const SignupSchema = Yup.object().shape({
 const Login = () => {
   const navigate = useNavigate();
   return(
-    <div className="min-h-screen flex items-center justify-center bg-green-400  p-4">
-        <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
+    <div className="min-h-screen bg-cover bg-center bg-repeat" style={{ backgroundImage: `url('/bg.png.jpg')`}}>
+        <div className="w-[400px] max-w-md h-[400px] bg-green-600 rounded-lg shadow-lg p-8 ml-12 mt-12">
         <h2 className="text-3xl font-semibold text-center text-gray-800 mb-8">Login</h2>
     <Formik
     initialValues={{ email: "", password: "" }}
@@ -47,10 +47,9 @@ const Login = () => {
     {({ errors, touched, values, setFieldValue }) => (
       
 
-        <Form className="space-y-6">
+        <Form className="space-y-7">
           <TextInput
-          className=" text-gray-700 font-medium mb-2"
-          style={{ width: "300px" }}
+          className="w-[300px] text-gray-700 font-medium mb-2"
             mt="sm"
             label="Email"
             placeholder=" Enter Email"
@@ -61,15 +60,15 @@ const Login = () => {
             : null}/>
           
           <PasswordInput
-          className="text-gray-700 font-medium mb-2"
-          style={{ width: "300px" }}
+          className="w-[300px] text-gray-700 font-medium mt-8"
+      
             label="Password"
             placeholder="Password"
             value={values.password}
             onChange={(event) => setFieldValue("password", event.target.value)}
             error={touched.email && errors.email ? <div>{errors.password}</div> : null}/>
         
-          <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md font-semibold transition">
+          <button type="submit" className="w-[300px] bg-green-700 mt-8 hover:bg-green-400 text-white py-2 px-4 rounded-md font-semibold transition mt-8">
             Sign In
           </button>
         </Form>
